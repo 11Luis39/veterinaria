@@ -1,0 +1,153 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record model="ir.ui.view" id="veterinaria.mascota_list">
+      <field name="name">veterinaria mascota list</field>
+      <field name="model">veterinaria.mascota</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name" optional ="show"/>
+          <field name="edad"/>
+          <field name="color"/>
+          <field name="type"/>
+          <field name="partner_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- form de mascota -->
+    <record model="ir.ui.view" id="veterinaria.mascota_form">
+      <field name="name">veterinaria mascota form</field>
+      <field name="model">veterinaria.mascota</field>
+      <field name="arch" type="xml">
+        <form>
+              <group>
+                <field name="name" optional ="show"/>
+                <field name="edad"/>
+                <field name="color"/>
+                <field name="type"/>
+                <field name="partner_id"/>
+                </group>
+                <notebook>
+                <page string="Cartilla">
+                    <field name="cartilla_ids">
+                        <tree>
+                            <field name="fecha"/>
+                            <field name="notas"/>
+                            <field name="producto_tmpl_id"/>
+                        </tree>
+                    </field>
+                </page>
+               <page string="Citas">
+                    <field name="evento_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="start_date"/>
+                            <field name="stop_date"/>
+                            <!-- Otros campos del evento que desees mostrar -->
+                        </tree>
+                    </field>
+                </page>
+                
+            </notebook>
+        </form>
+      </field>
+    </record>
+
+     <!-- Heredar y modificar la vista de formulario de res.partner -->
+        <record id="view_partner_form_inherit_veterinaria_mascota" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit.veterinaria</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Mascotas">
+                        <field name="mascota_ids">
+                            <tree>
+                                <field name="name"/>
+                                <field name="edad"/>
+                                <field name="color"/>
+                                <field name="type"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_calendar_event_form_inherit_veterinaria" model="ir.ui.view">
+            <field name="name">calendar.event.form.inherit.veterinaria</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_form"/> <!-- Referencia a la vista original -->
+            <field name="arch" type="xml">
+                <!-- Añadir campos al formulario existente -->
+                <xpath expr="//form/sheet" position="inside">
+                    <group>
+                        <!-- Campo para seleccionar la mascota relacionada -->
+                        <field name="mascota_id"/>
+                        <field name="dueno_telefono"/>
+                        <!-- Campo para mostrar la URL de WhatsApp -->
+                        <field name="whatsapp_url" widget="url" readonly="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+
+     <!-- vista cartilla de mascota 
+      <record model="ir.ui.view" id="veterinaria_cartilla_form">
+            <field name="name">veterinaria.cartilla.form</field>
+            <field name="model">veterinaria.cartilla</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="fecha"/>
+                        <field name="mascota_id"/>
+                        <field name="nombre_mascota"/>
+                        <field name="notas"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        -->
+    
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="veterinaria.mascota_action_window">
+      <field name="name">Registro de mascota</field>
+      <field name="res_model">veterinaria.mascota</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- actions opening views on models -->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="veterinaria.action_server">
+      <field name="name">veterinaria server</field>
+      <field name="model_id" ref="model_veterinaria_veterinaria"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+
+    <menuitem name="Registro de mascota" id="veterinaria.menu_root"/>
+    
+    <!-- menu categories -->
+
+    <menuitem name="Registro de mascota" id="veterinaria.mascota_menu_1" parent="veterinaria.menu_root"/>
+    
+    <!-- actions -->
+
+    <menuitem name="Mascota" id="veterinaria.mascota_menu_1_list" parent="veterinaria.mascota_menu_1"
+              action="veterinaria.mascota_action_window"/>
+  </data>
+</odoo>
